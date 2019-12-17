@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
-import { CssBaseline } from '@material-ui/core';
+import { CssBaseline, StylesProvider } from '@material-ui/core';
 
 /************** Style Sheet **************/
 import { AppWrapper } from './styles';
@@ -23,16 +23,17 @@ const App = () => (
     <CssBaseline />
     <Router>
       <AppWrapper>
-        <Navigation />
-        
-        <Route exact path={ROUTES.LANDING} component={LandingPage} />
-        <Route path={ROUTES.HOME} component={HomePage} />
-        <Route path={ROUTES.MY_RECIPES} component={MyRecipesPage} />
-        <Route path={ROUTES.ACCOUNT} component={AccountPage} />
-        <Route path={ROUTES.SIGN_IN} component={SignInPage} />
-        <Route path={ROUTES.CREATE_ACCOUNT} component={CreateAccountPage} />
-        <Route path={ROUTES.FORGOT_PW} component={ForgotPasswordPage} />
-
+        <StylesProvider injectFirst>
+          <Navigation />
+          
+          <Route exact path={ROUTES.LANDING} component={LandingPage} />
+          <Route path={ROUTES.HOME} component={HomePage} />
+          <Route path={ROUTES.MY_RECIPES} component={MyRecipesPage} />
+          <Route path={ROUTES.ACCOUNT} component={AccountPage} />
+          <Route path={ROUTES.SIGN_IN} component={SignInPage} />
+          <Route path={ROUTES.CREATE_ACCOUNT} component={CreateAccountPage} />
+          <Route path={ROUTES.FORGOT_PW} component={ForgotPasswordPage} />
+        </StylesProvider>
       </AppWrapper>
     </Router>
   </>

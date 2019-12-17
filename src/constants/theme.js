@@ -6,6 +6,7 @@ const theme = {
     colors: {
       main: "#000",
       accent: accent,
+      error: "#C0392b"
     },
     fonts: {
       main: "Roboto Condensed",
