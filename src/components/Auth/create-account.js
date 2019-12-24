@@ -1,11 +1,10 @@
 import React, { useState, useContext } from 'react';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 
 /************ Local Imports *************/
-import theme from '../../constants/theme';
-import { MainButton } from '../../components/Shared';
-import * as ROUTES from '../../constants/routes';
+import { MainButton, UnStyledLink, ErrorMessage, SquaredButtonSmall } from '../../components/Shared';
+import * as ROUTES from '../../utils/constants/routes';
 import { FirebaseContext } from '../../utils/Firebase';
 
 /******************* Material-UI *******************/
@@ -49,7 +48,7 @@ export const CreateAccountForm = () => {
     username === '' ||
     passwordOne !== passwordTwo ||
     passwordOne === '' ||
-    passwordOne.length < 5;
+    passwordOne.length < 6;
 
 
   const passwordMismatch =
@@ -104,7 +103,7 @@ export const CreateAccountForm = () => {
         />
       </FormInput>
       <MainButton disabled={isInvalid} type="submit" >CreateAccount</MainButton>
-      { error && <ErrorMessage>{error.message}</ErrorMessage>}
+      { error && <ErrorMessage>{error.message}</ErrorMessage> }
     </FormContainer>
   );
 };
@@ -122,10 +121,7 @@ const FormInput = styled(FormControl)`
   margin-bottom: 10px;
 `;
 
-const ErrorMessage = styled.p`
-  color: ${theme.text.colors.error};
-`;
-
+// END Styled Components
 
 /******************* Create Account Link *******************/
 export const CreateAccountLink = () => (
@@ -134,14 +130,12 @@ export const CreateAccountLink = () => (
   </p>
 );
 
-// Styled Components – Create Account Form
-const UnStyledLink = styled(Link)`
-  text-decoration: underline;
-  color: ${theme.text.colors.main};
-  font-family: ${theme.text.fonts.main};
-  font-size: 1em;
+/******************* Create Account Button *******************/
+export const CreateAccountButton = ({ invertColors }) => {
 
-  :hover {
-    font-weight: bold;
-  }
-`;
+  let routerHistory = useHistory();
+
+  return (
+    <SquaredButtonSmall  variant="text" invertColors={invertColors} onClick={ event => routerHistory.push(ROUTES.CREATE_ACCOUNT) }>Create Account</SquaredButtonSmall>
+  )
+}

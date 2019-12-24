@@ -1,9 +1,13 @@
 import React from 'react';
+import { Section, PageTitle } from '../../components/Shared'
 
-const Landing = () => (
-  <div>
-    <h1>Landing Page</h1>
-  </div>
-);
+const Landing = () => {
+
+  return (
+    <Section>
+      <PageTitle>Landing Page</PageTitle>
+    </Section>
+  );
+};
 
 export default Landing;

@@ -2,13 +2,14 @@ import React from 'react';
 
 
 /************ Local Imports *************/
-import { CreateAccountLink } from '../../components/Auth';
+import { SignOutButton } from '../../components/Auth';
+import { Section, PageTitle } from '../../components/Shared';
 
 const Account = () => (
-  <div>
-    <h1>Account Page</h1>
-    <CreateAccountLink />
-  </div>
+  <Section>
+    <PageTitle>Account</PageTitle>
+    <SignOutButton />
+  </Section>
 );
 
 export default Account;
