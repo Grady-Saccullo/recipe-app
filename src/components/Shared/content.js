@@ -13,6 +13,15 @@ export const SectionFullWidth = styled.div`
   width: 100%;
 `;
 
+export const SectionNarrowWidth = styled.div`
+  max-width: 900px;
+  padding: 0 10px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
 export const DivGap = styled.div`
   width: ${props => props.width};
   height: ${props => props.height};
