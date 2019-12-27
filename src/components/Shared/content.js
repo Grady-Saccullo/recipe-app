@@ -25,9 +25,13 @@ export const SectionNarrowWidth = styled.div`
 export const DivGap = styled.div`
   width: ${props => props.width};
   height: ${props => props.height};
+  padding: ${props => props.padding};
+  margin: ${props => props.margin};
 `
 
 export const SpanGap = styled.span`
   width: ${props => props.width};
   height: ${props => props.height};
+  padding: ${props => props.padding};
+  margin: ${props => props.margin};
 `

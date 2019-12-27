@@ -1,5 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react';
 
+import AddIcon from '@material-ui/icons/Add';
 import {
   FormControl,
   FormLabel,
@@ -7,8 +8,9 @@ import {
   FormControlLabel,
   Checkbox,
   InputLabel,
-  Select,
-  MenuItem
+  MenuItem,
+  Fab,
+  IconButton
 } from '@material-ui/core';
 
 import {
@@ -17,44 +19,44 @@ import {
   Description,
   SectionTitle,
   Item,
-  ItemField
+  ItemInputField,
+  ItemSelectField
 } from './styles';
-import { SectionNarrowWidth } from '../../components/Shared';
+
+import {
+  SectionNarrowWidth,
+  SpanGap
+} from '../../components/Shared';
 
 
 
 const NewRecipe = () => {
 
-  const [ textFields, setTextFields ] = useState({
+  const [ state, setState ] = useState({
     title: '',
     description: '',
-  });
-
-  const [ recipeType, setRecipeType ] = useState({
+    notes: '',
     food: false,
     drink: false,
+    ingredients: [],
+    steps: []
   });
 
-  const [ ingredientsList, setIngredientsList ] = useState([]);
-
   const handleTypeChange = name => event => {
-    setRecipeType({ ...recipeType, [name]: event.target.checked });
+    setState({ ...state, [name]: event.target.checked });
   };
 
   const handleFieldChange = event => {
-    setTextFields({ ...textFields, [ event.target.name ]: event.target.value });
+    setState({ ...state, [ event.target.name ]: event.target.value });
   }
 
   const addIngredients = ( ingredients ) => {
-    let tempList = ingredientsList;
+    let tempList = state.ingredients;
     tempList.push(ingredients);
-    setIngredientsList(tempList);
+    setState({ ...state, ingredients: tempList });
   }
 
-  const { title, description } = textFields;
-  const { food, drink } = recipeType;
-
-  
+  const { title, description, notes, food, drink, ingredients, steps } = state;
 
   return (
     <SectionNarrowWidth> 
@@ -104,16 +106,29 @@ const NewRecipe = () => {
 
         <SectionTitle>Ingredients</SectionTitle>
         {
-          ingredientsList !== undefined
+          ingredients.length > 0
             ? (
-              ingredientsList.map(ingredient => (
-                  <>
-                    <div>{ingredient.qty}</div>
-                    <div>{ingredient.type}</div>
-                    <div>{ingredient.description}</div>
-                  </>
-                ))
-            ) : ( console.log('in false') )
+              <table>
+                <thead>
+                  <tr>
+                    <th>Qty</th>
+                    <th>Measurment</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {
+                    ingredients.map((ingredient, index) => (
+                      <tr key={index}>
+                        <td>{ingredient.qty}</td>
+                        <td>{ingredient.type}{ingredient.qty > 1 ? 's' : ''}</td>
+                        <td>{ingredient.description}</td>
+                      </tr>
+                    ))
+                  }
+              </tbody>
+              </table>
+            ) : ( null )
         }
         <Ingredients onClick={addIngredients} />
         <SectionTitle>Steps</SectionTitle>
@@ -161,16 +176,18 @@ const Ingredients = ({ onClick }) => {
     <Item>
       <FormControl>
       <InputLabel>Qty</InputLabel>
-      <ItemField
+      <ItemInputField
         name="qty"
         width="75px"
         value={ingredients.qty}
         onChange={event => onChange(event)}
       />
       </FormControl>
+      <SpanGap padding="10px" />
       <FormControl>
         <InputLabel>Measurement</InputLabel>
-        <Select
+        <ItemSelectField
+          width="110px"
           name="type"
           value={ingredients.type}
           onChange={event => onChange(event)}
@@ -179,18 +196,20 @@ const Ingredients = ({ onClick }) => {
           <MenuItem value="cup">Cup{addS()}</MenuItem>
           <MenuItem value="pint">Pint{addS()} </MenuItem>
           <MenuItem value="gram">gram{addS()}</MenuItem>
-        </Select>
+        </ItemSelectField>
       </FormControl>
+      <SpanGap padding="10px" />
       <FormControl>
         <InputLabel>Description</InputLabel>
-        <ItemField
+        <ItemInputField
           name="description"
-          width="300px"
+          width="250px"
           value={ingredients.description}
           onChange={event => onChange(event)}
         />
       </FormControl>
-      <button disabled={isInvalid} onClick={onAddClick}>Add</button>
+      <IconButton
+      disabled={isInvalid} onClick={onAddClick} size="small"><AddIcon /></IconButton>
     </Item>
   );
 }

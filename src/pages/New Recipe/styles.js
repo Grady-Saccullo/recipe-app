@@ -3,12 +3,13 @@ import styled from 'styled-components';
 import {
   InputBase,
   OutlinedInput,
-  Input
+  Input,
+  Select
 } from '@material-ui/core';
 
 export const EditableContent = styled.form`
+  max-width: 600px;
   width: 100%;
-  max-width: 500px;
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -35,14 +36,18 @@ export const SectionTitle = styled.h3`
 `;
 
 export const Item = styled.div`
-  width: 100%;
+  width: fit-content;
   border: 1px solid #a1a1a1;
   border-radius: 3px;
   padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
 
-export const ItemField = styled(Input)`
-  width: ${ props => props.width };
+export const ItemInputField = styled(Input)`
+  width: 100%;
+  max-width: ${ props => props.width };
   height: 32px;
   border-radius: 1px solid #a9a9a9;
 `;
@@ -59,3 +64,9 @@ export const Description = styled(InputBase)`
     background-color: #e9e9e9
   }
 `;
+
+export const ItemSelectField = styled(Select)`
+  width: ${ props => props.width };
+`
+
+
