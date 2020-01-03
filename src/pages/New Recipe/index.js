@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext } from 'react';
 
 import AddIcon from '@material-ui/icons/Add';
 import {
@@ -9,10 +9,9 @@ import {
   Checkbox,
   InputLabel,
   MenuItem,
-  Fab,
-  IconButton
 } from '@material-ui/core';
 
+/* ========== Component Specific Styles ========== */
 import {
   EditableContent,
   Title,
@@ -23,14 +22,19 @@ import {
   ItemSelectField
 } from './styles';
 
+/* ========== Shared ========== */
+import { FirebaseContext } from '../../utils/Firebase';
+
 import {
   SectionNarrowWidth,
-  SpanGap
+  SquaredButtonSmall,
+  DivGap
 } from '../../components/Shared';
 
-
-
+/* ========== Main Page Component ========== */
 const NewRecipe = () => {
+
+  const firebase = useContext(FirebaseContext);
 
   const [ state, setState ] = useState({
     title: '',
@@ -48,30 +52,60 @@ const NewRecipe = () => {
 
   const handleFieldChange = event => {
     setState({ ...state, [ event.target.name ]: event.target.value });
-  }
+  };
 
   const addIngredients = ( ingredients ) => {
     let tempList = state.ingredients;
     tempList.push(ingredients);
     setState({ ...state, ingredients: tempList });
-  }
+  };
 
-  const { title, description, notes, food, drink, ingredients, steps } = state;
+  const addStep = ( step ) => {
+    let tempList = state.steps;
+    tempList.push(step);
+    setState({ ...state, steps: tempList });
+  };
+
+  const onSubmit = event => {
+    firebase
+      .createNewRecipe({
+        title: title,
+        description: description,
+        food: food,
+        drink: drink,
+        ingredients: ingredients,
+        steps: steps
+      });
+
+    setState({
+      title: '',
+      description: '',
+      notes: '',
+      food: false,
+      drink: false,
+      ingredients: [],
+      steps: []
+    });
+
+    event.preventDefault();
+  } 
+
+  const { title, description, food, drink, ingredients, steps } = state;
 
   return (
-    <SectionNarrowWidth> 
-      <EditableContent>
+    <SectionNarrowWidth>
+      <EditableContent onSubmit={onSubmit}>
         <div className="text-content">
           <Title
             name="title"
             value={title}
-            placeholder="Title*"
+            placeholder="Title"
             onChange={event => handleFieldChange(event)}
           />
           <Description
             name="description"
             value={description}
-            placeholder="Description"
+            placeholder="Description (Optional)"
             onChange={event => handleFieldChange(event)}
           />
         </div>
@@ -121,7 +155,7 @@ const NewRecipe = () => {
                     ingredients.map((ingredient, index) => (
                       <tr key={index}>
                         <td>{ingredient.qty}</td>
-                        <td>{ingredient.type}{ingredient.qty > 1 ? 's' : ''}</td>
+                        <td>{ingredient.type !== 'none' ? ingredient.type + (ingredient.qty > 1 ? 's' : '') : ''}</td>
                         <td>{ingredient.description}</td>
                       </tr>
                     ))
@@ -130,42 +164,53 @@ const NewRecipe = () => {
               </table>
             ) : ( null )
         }
-        <Ingredients onClick={addIngredients} />
+        <Ingredient onClick={addIngredients} />
         <SectionTitle>Steps</SectionTitle>
-        <Item>list type box at bottom for next element</Item>
+        <RecipeStep onClick={addStep} currentNumberSteps={steps.length} someLen={0} />
+        {steps.length > 0
+          ? (
+            steps.map(( step, index ) => (
+              <div key={index} style={{ padding: '20px' }}>
+                <h3 style={{ marginBottom: '0' }}>Step {index + 1}.</h3>
+                <hr style={{color: 'black'}} />
+                <p>{step.description}</p>
+              </div>
+            ))
+
+          ) : ( null )
+        }
+        <button type="submit">Add Recipe</button>
       </EditableContent>
     </SectionNarrowWidth>
   );
 }
 
-const Ingredients = ({ onClick }) => {
+/* ========== New Recipe Ingredient ========== */
+const Ingredient = ({ onClick }) => {
   const [ingredients, setIngredients] = useState({
     qty: '',
     type: '',
-    description: ''
+    description: '',
+    notes: ''
   });
 
   const onChange = event => {
-    setIngredients({ ...ingredients, [ event.target.name ]: event.target.value })
+    setIngredients({ ...ingredients, [event.target.name]: event.target.value })
   };
 
-  const onAddClick = event => {
+  const onClickAdd = event => {
     onClick(ingredients);
     setIngredients({
       qty: '',
       type: '',
-      description: ''
+      description: '',
+      notes: '',
     });
     event.preventDefault();
+
   }
 
-  const addS = () => (
-    `${
-      ingredients.qty > 1
-        ? 's'
-        : ''
-    }`
-  );
+  const addS = () => (`${ ingredients.qty > 1 ? 's' : '' }`);
 
   const isInvalid =
     ingredients.qty === '' ||
@@ -174,20 +219,32 @@ const Ingredients = ({ onClick }) => {
 
   return (
     <Item>
-      <FormControl>
-      <InputLabel>Qty</InputLabel>
-      <ItemInputField
-        name="qty"
-        width="75px"
-        value={ingredients.qty}
-        onChange={event => onChange(event)}
-      />
+
+      <div style={{
+        minWidth:  '40px',
+        width: '10%',
+        paddingRight: '10px' 
+      }}>
+      <FormControl fullWidth>
+        <InputLabel>Qty</InputLabel>
+        <ItemInputField
+          name="qty"
+          fullWidth
+          value={ingredients.qty}
+          onChange={event => onChange(event)}
+        />
       </FormControl>
-      <SpanGap padding="10px" />
-      <FormControl>
+      </div>
+
+      <div style={{
+          minWidth: '115px',
+          width: '25%',
+          paddingRight: '10px'
+      }}>
+      <FormControl fullWidth>
         <InputLabel>Measurement</InputLabel>
         <ItemSelectField
-          width="110px"
+          fullWidth
           name="type"
           value={ingredients.type}
           onChange={event => onChange(event)}
@@ -198,18 +255,102 @@ const Ingredients = ({ onClick }) => {
           <MenuItem value="gram">gram{addS()}</MenuItem>
         </ItemSelectField>
       </FormControl>
-      <SpanGap padding="10px" />
-      <FormControl>
+      </div>
+
+      <div style={{
+        minWidth: '150px',
+        width: '65%',
+      }}>
+      <FormControl fullWidth>
         <InputLabel>Description</InputLabel>
         <ItemInputField
           name="description"
-          width="250px"
+          fullWidth
           value={ingredients.description}
           onChange={event => onChange(event)}
         />
       </FormControl>
-      <IconButton
-      disabled={isInvalid} onClick={onAddClick} size="small"><AddIcon /></IconButton>
+      </div>
+
+      <FormControl fullWidth>
+        <InputLabel>Notes (Optional)</InputLabel>
+        <ItemInputField
+          name="notes"
+          fullWidth
+          value={ingredients.notes}
+          onChange={event => onChange(event)}
+        />
+      </FormControl>
+      <DivGap height="20px" width="100%" />
+      <SquaredButtonSmall
+        disabled={isInvalid}
+        onClick={onClickAdd}
+        size="small"
+      >
+        <AddIcon />Add
+      </SquaredButtonSmall>
+    </Item>
+  );
+}
+
+/* ========== New Recipe Step ========== */
+const RecipeStep = ({ onClick, currentNumberSteps }) => {
+
+  const [ step, setStep ] = useState({
+    description: '',
+    number: currentNumberSteps + 1,
+  });
+
+  const onClickAdd = event => {
+    if (step.number === '') setStep({ ...step, number : currentNumberSteps + 1 })
+    onClick(step);
+    setStep({
+      description: '',
+      number: currentNumberSteps + 2
+    });
+    event.preventDefault();
+  }
+
+  const onChange = event => {
+    setStep({ ...step, [event.target.name] : event.target.value});
+  }
+  const isInvalid = step.description === '';
+  return (
+    <Item>
+      <div style={{
+        display: 'flex',
+        flexDirection: 'row',
+        width: '100%'
+      }}>
+      <div style={{
+        width: '40px',
+      }}>
+      <Description
+        name="number"
+        placeholder={(currentNumberSteps + 1).toString()}
+        value={step.number}
+        onChange={event => onChange(event)}
+      />
+      </div>
+      <FormControl fullWidth>
+        <InputLabel>Information</InputLabel>
+        <ItemInputField
+          name="description"
+          multiline
+          fullWidth
+          value={step.description}
+          onChange={event => onChange(event)}
+        />
+      </FormControl>
+      </div>
+      <DivGap height="20px" width="100%" />
+      <SquaredButtonSmall
+        disabled={isInvalid}
+        onClick={onClickAdd}
+        size="small"
+      >
+        <AddIcon /> Add
+      </SquaredButtonSmall>
     </Item>
   );
 }

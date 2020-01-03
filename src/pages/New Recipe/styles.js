@@ -2,7 +2,6 @@ import styled from 'styled-components';
 
 import {
   InputBase,
-  OutlinedInput,
   Input,
   Select
 } from '@material-ui/core';
@@ -36,19 +35,21 @@ export const SectionTitle = styled.h3`
 `;
 
 export const Item = styled.div`
-  width: fit-content;
+  width: 100%;
   border: 1px solid #a1a1a1;
   border-radius: 3px;
-  padding: 10px;
+  padding: 20px;
   display: flex;
-  align-items: center;
+  flex-wrap: wrap;
+  align-items: left;
   justify-content: center;
 `;
 
 export const ItemInputField = styled(Input)`
   width: 100%;
-  max-width: ${ props => props.width };
-  height: 32px;
+  width: ${ props => props.width || "100%" };
+  padding-top: 5px;
+  min-height: 32px;
   border-radius: 1px solid #a9a9a9;
 `;
 

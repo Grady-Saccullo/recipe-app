@@ -20,7 +20,6 @@ import {
 const Navigation = () => {
   let userData = useContext(AuthUserContext);
   console.log(userData);
-  // const user
   return(
     <Container>
       <Content>

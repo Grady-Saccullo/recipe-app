@@ -19,7 +19,10 @@ import {
 export const CreateAccountForm = () => {
 
   let firebase = useContext(FirebaseContext)
+  let routerHistory = useHistory();
 
+  const [ first, setFirst ] = useState('');
+  const [ last, setLast ] = useState('');
   const [ username, setUsername ] = useState('');
   const [ email, setEmail ] = useState('');
   const [ passwordOne, setPasswordOne ] = useState('');
@@ -27,6 +30,8 @@ export const CreateAccountForm = () => {
   const [ error, setError ] = useState(null);
 
   const resetState = () => {
+    setFirst('');
+    setLast('');
     setUsername('');
     setEmail('');
     setPasswordOne('');
@@ -37,15 +42,31 @@ export const CreateAccountForm = () => {
   const onSubmit = event => {
     firebase
       .doCreateUserWithEmailAndPassword(email, passwordOne)
-      .then(authUser => resetState())
+      .then(authUser => {
+        authUser.updateProfile({
+          displayName: `${first} ${last}`
+        })
+        firebase.createNewUserDocument(
+          {
+            name: {
+              first: first,
+              last: last
+            },
+            username: username
+        });
+      })
       .catch(error => setError(error));
-
+    
+    routerHistory.push(ROUTES.HOME);
+    resetState();
     event.preventDefault();
   }
 
   const isInvalid =
-    email === '' ||
+    first === '' ||
+    last === '' ||
     username === '' ||
+    email === '' ||
     passwordOne !== passwordTwo ||
     passwordOne === '' ||
     passwordOne.length < 6;
@@ -57,6 +78,28 @@ export const CreateAccountForm = () => {
 
   return(
     <FormContainer onSubmit={onSubmit}>
+      {/* First Name Input */}
+      <FormInput variant="outlined">
+        <InputLabel>First Name</InputLabel>
+        <OutlinedInput
+          type="text"
+          value={first}
+          onChange={event => setFirst(event.target.value)}
+          labelWidth={74}
+        />
+      </FormInput>
+
+      {/* Last Name Input */}
+      <FormInput variant="outlined">
+        <InputLabel>Last Name</InputLabel>
+        <OutlinedInput
+          type="text"
+          value={last}
+          onChange={event => setLast(event.target.value)}
+          labelWidth={74}
+        />
+      </FormInput>
+
       {/* Username Input */}
       <FormInput variant="outlined">
         <InputLabel>Username</InputLabel>

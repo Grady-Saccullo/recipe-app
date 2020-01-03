@@ -13,7 +13,7 @@ import {
   SquaredButton
 } from '../../components/Shared';
 
-/******************* Material-UI *******************/
+/******************* Material-UI Style Sheet *******************/
 import {
   FormControl,
   InputLabel,
@@ -98,6 +98,17 @@ export const SignInWithGoogleButton = () => {
     firebase
       .doSignInWithGoogle()
       .then(socialAuthUser =>{
+        if (socialAuthUser.additionalUserInfo.isNewUser) {
+          firebase.createNewUserDocument(
+            {
+              name: {
+                first: socialAuthUser.additionalUserInfo.profile.given_name,
+                last: socialAuthUser.additionalUserInfo.profile.family_name,
+              },
+              username: socialAuthUser.user.displayName
+            }
+          );
+        }
         setError(null);
         routerHistory.push(ROUTES.HOME);
       })
@@ -137,6 +148,6 @@ export const SignInButton = ({ invertColors }) => {
   let routerHistory = useHistory();
 
   return (
-    <SmallButton invertColors={invertColors} onClick={event => routerHistory.push(ROUTES.SIGN_IN)}>SIGN IN</SmallButton>
+    <SmallButton invertColors={invertColors} onClick={() => routerHistory.push(ROUTES.SIGN_IN)}>SIGN IN</SmallButton>
   )
 }

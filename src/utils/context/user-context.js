@@ -48,7 +48,7 @@ const FontImport = styled.div`
   @import url('https://fonts.googleapis.com/css?family=Permanent+Marker|Roboto+Condensed:400,700&display=swap');
 
   * {
-    font-family: 'Roboto Condensed';
+    font-family: 'Roboto Condensed', sans-serif;
   }
 `;
 

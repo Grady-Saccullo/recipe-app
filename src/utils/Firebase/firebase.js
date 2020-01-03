@@ -1,6 +1,7 @@
 import app from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/firestore';
+import 'firebase/storage';
 
 const config = {
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
@@ -17,17 +18,18 @@ class Firebase {
   constructor() {
     app.initializeApp(config);
     this.auth = app.auth();
+    this.storage = app.storage();
+    this.firestore = app.firestore()
 
+    // Auth Sign In providers
     this.googleProvider = new app.auth.GoogleAuthProvider();
   }
 
 
-  /**** Auth API ****/
-
+  /* ========== Auth API ========== */
   doCreateUserWithEmailAndPassword = (email, password) =>
     this.auth.createUserWithEmailAndPassword(email, password);
 
-  /**** Sign In Methods ****/
   // Email & Password
   doSignInWithEmailAndPassword = ( email, password ) =>
     this.auth.signInWithEmailAndPassword(email, password);
@@ -41,6 +43,43 @@ class Firebase {
 
   // Forgot Password/Rest Password
   doForgotPassword = email => this.auth.sendPasswordResetEmail(email);
+
+  /* ========== Firestore API ========== */
+  // Create new user document in users collection
+  createNewUserDocument = (data) => 
+    this.firestore
+      .collection('users')
+      .doc(this.auth.currentUser.uid)
+      .set(data)
+      .catch(error => console.error('Firebase createDocument: ', error));
+  
+  // Get specified document from a given collection
+  getFSUserDocument = (uid, callback) => {
+    return (
+      this.firestore
+        .collection('users')
+        .doc(uid)
+        .collection('recipes')
+        .get()
+        .then(collectionData => callback(collectionData))
+        .catch(error => console.error('Firebase getFSDocument: ', error))
+    );
+  }
+
+  // Add new recipe to the currently signed in user
+  createNewRecipe = (data) =>
+    this.firestore
+      .collection('users')
+      .doc(this.auth.currentUser.uid)
+      .collection('recipes')
+      .doc()
+      .set(data)
+      .catch(error => console.error('Firebase createNewRecipe: ', error));
+
+
+  /* ========== Storage API ========== */
+
+
 }
 
 export default Firebase;
