@@ -11,7 +11,7 @@ steps:
     - --key=cloudbuild-env
 # Install
 - name: 'gcr.io/cloud-builders/yarn'
-  args: ['install', '--no-optional']
+  args: ['install']
 
 # Test
 #- name: 'gcr.io/cloud-builders/yarn'
