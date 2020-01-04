@@ -39,6 +39,7 @@ const NewRecipe = () => {
   const [ state, setState ] = useState({
     title: '',
     description: '',
+    heroImage: null,
     notes: '',
     food: false,
     drink: false,
@@ -75,6 +76,10 @@ const NewRecipe = () => {
         drink: drink,
         ingredients: ingredients,
         steps: steps
+      }, docRef => {
+        firebase.uploadRecipeImage(docRef.id, heroImage.name, heroImage, snapshot => {
+          // pass in data to update document with photo url
+        });
       });
 
     setState({
@@ -88,9 +93,14 @@ const NewRecipe = () => {
     });
 
     event.preventDefault();
-  } 
+  }
 
-  const { title, description, food, drink, ingredients, steps } = state;
+  const onFileChange = event => {
+    // add in preview for image...
+    setState({ ...state, heroImage: event.target.files[0]});
+  }
+
+  const { title, description, heroImage, food, drink, ingredients, steps } = state;
 
   return (
     <SectionNarrowWidth>
@@ -136,7 +146,16 @@ const NewRecipe = () => {
             />
           </FormGroup>
         </FormControl>
-        <div>IMAGE UPLOADED GOES HERE</div>
+
+        <FormControl>
+          <label>Recipe Image</label>
+          <input
+            name="fileUpload"
+            type="file"
+            accept=".jpg, .jpeg, .png"
+            onChange={event => onFileChange(event)}
+          />
+        </FormControl>
 
         <SectionTitle>Ingredients</SectionTitle>
         {

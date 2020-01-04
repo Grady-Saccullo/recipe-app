@@ -67,17 +67,28 @@ class Firebase {
   }
 
   // Add new recipe to the currently signed in user
-  createNewRecipe = (data) =>
+  createNewRecipe = (data, callback) =>
     this.firestore
       .collection('users')
       .doc(this.auth.currentUser.uid)
       .collection('recipes')
-      .doc()
-      .set(data)
+      .add(data)
+      .then(docRef => callback(docRef))
       .catch(error => console.error('Firebase createNewRecipe: ', error));
 
-
   /* ========== Storage API ========== */
+  // need to get url from photo and pass data through callback
+  // look into cloud function to listen to users folder in storage and compress images accordingly
+  uploadRecipeImage = (recipeId, filename, file, callback) =>
+    this.storage.ref()
+      .child(`/users/${this.auth.currentUser.uid}/recipes/${recipeId}/${filename}`)
+      .put(file)
+      .on(
+        'state_changed',
+        snapshot => console.log(Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100)),
+        error => console.error('Firebase uploadRecipeImage: ', error),
+        callback
+      );
 
 
 }
