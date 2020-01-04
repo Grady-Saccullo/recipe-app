@@ -9,6 +9,7 @@ steps:
     - --location=global
     - --keyring=build-env
     - --key=cloudbuild-env
+
 # Install
 - name: 'gcr.io/cloud-builders/yarn'
   args: ['install', '--ignore-engines']
@@ -22,5 +23,5 @@ steps:
   args: ['run', 'build']
 
 # Deploy
-- name: 'gcr.io/$PROJECT_ID/firebase'
+- name: 'gcr.io/cloud-builders/yarn'
   args: ['run', 'deploy']
