@@ -1,4 +1,14 @@
 steps:
+
+- name: gcr.io/cloud-builders/gcloud
+  args:
+    - kms
+    - decrypt
+    - --ciphertext-file=.env.enc
+    - --pllaintext-file=.enc
+    - --location=global
+    - --keyring=build-env
+    - --key=cloudbuild-env
 # Install
 - name: 'gcr.io/cloud-builders/yarn'
   args: ['install']
@@ -13,4 +23,4 @@ steps:
 
 # Deploy
 - name: 'gcr.io/$PROJECT_ID/firebase'
-  args: ['deploy']
+  args: ['run', 'deploy']
