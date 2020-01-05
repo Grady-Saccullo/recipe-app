@@ -1,5 +1,7 @@
 import styled from 'styled-components';
 import { CardActionArea, CardMedia} from '@material-ui/core';
+import { Link } from 'react-router-dom';
+import theme from '../../utils/constants/theme';
 
 export const TitleContainer = styled.div`
   position: relative;
@@ -28,9 +30,17 @@ export const CardsContainer = styled.div`
   justify-content: center;
 `;
 
+export const CardLink = styled(Link)`
+  text-decoration: none;
+  color: ${theme.text.colors.main};
+  font-family: ${theme.text.fonts.main};
+  max-width: 750px;
+  width: 100%;
+  
+`;
+
 export const Card = styled(CardActionArea)`
   width: 100%;
-  max-width: 750px;
   height: 280px;
   padding: 20px;
   display: flex;

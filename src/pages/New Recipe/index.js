@@ -77,8 +77,13 @@ const NewRecipe = () => {
         ingredients: ingredients,
         steps: steps
       }, docRef => {
-        firebase.uploadRecipeImage(docRef.id, heroImage.name, heroImage, snapshot => {
-          // pass in data to update document with photo url
+        firebase.uploadRecipeImage(
+          docRef.id,
+          heroImage.name,         // replace with title
+          heroImage,
+          progess => console.log(progess),
+          downloadURL => {
+            docRef.update({ heroImageURL: downloadURL });
         });
       });
 
@@ -102,6 +107,12 @@ const NewRecipe = () => {
 
   const { title, description, heroImage, food, drink, ingredients, steps } = state;
 
+  const isInvalid =
+    state.title === '' ||
+    (state.food === false && state.drink === false) ||
+    state.ingredients.length <= 0 ||
+    state.steps.length <= 0;
+    
   return (
     <SectionNarrowWidth>
       <EditableContent onSubmit={onSubmit}>
@@ -198,7 +209,7 @@ const NewRecipe = () => {
 
           ) : ( null )
         }
-        <button type="submit">Add Recipe</button>
+        <button disabled={isInvalid} type="submit">Add Recipe</button>
       </EditableContent>
     </SectionNarrowWidth>
   );

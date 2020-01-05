@@ -13,6 +13,7 @@ import CreateAccountPage from '../pages/auth/Create Account';
 import ForgotPasswordPage from '../pages/auth/Forgot Password';
 // Recipe
 import MyRecipesPage from '../pages/My Recipes';
+import MyRecipePage from '../pages/My Recipe';
 import NewRecipePage from '../pages/New Recipe';
 import { AuthUserContext } from '../utils/context/user-context';
 import * as ROUTES from '../utils/constants/routes';
@@ -38,8 +39,9 @@ const App = () => {
                     <>
                       <Route exact path={ROUTES.HOME} component={HomePage} />
                       <Route exact path={ROUTES.ACCOUNT} component={AccountPage} />
-                      <Route exact path={ROUTES.MY_RECIPES} component={MyRecipesPage} />
                       <Route exact path={ROUTES.NEW_RECIPE} component={NewRecipePage} />
+                      <Route exact path={ROUTES.MY_RECIPES} component={MyRecipesPage} />
+                      <Route exact path={ROUTES.MY_RECIPE} component={MyRecipePage} />
                     </>
                   ) : ( null )
               }

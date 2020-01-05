@@ -9,6 +9,7 @@ import {
   AddButtonContainer,
   HrFull,
   CardsContainer,
+  CardLink,
   Card,
   CardHeroImg,
   CardContent,
@@ -33,7 +34,12 @@ const MyRecipes = () => {
     let currentRecipes = recipesState;
     firebase.getFSUserDocument(authUser.authData.uid, recipes => {
       recipes.forEach(recipe => {
-        currentRecipes.push(recipe.data());
+        let tmpData = recipe.data();
+        tmpData = {
+          ...tmpData,
+          id: recipe.id
+        }
+        currentRecipes.push(tmpData);
       });
       setIsLoading(false);
     });
@@ -44,8 +50,6 @@ const MyRecipes = () => {
     getRecipes();
   },[getRecipes]);
 
-  console.log('isLoading state: ', isLoading);
-  console.log('recipe state: ', recipesState);
   return (
     <Section>
       <TitleContainer>
@@ -61,9 +65,10 @@ const MyRecipes = () => {
       <CardsContainer>
         {!isLoading ? (
           recipesState.map((recipe, index) => (
-            <Card key={index}>
+            <CardLink key={index} to={{ pathname: `${ROUTES.MY_RECIPES}/${recipe.title}`, state: {data: recipe} }}>
+            <Card>
               <CardHeroImg
-                // image={testImage}
+                image={recipe.heroImageURL}
                 title="Card Title"
               />
               <CardContent>
@@ -71,6 +76,7 @@ const MyRecipes = () => {
                 <CardDescription>{recipe.description}</CardDescription>
               </CardContent>
             </Card>
+          </CardLink>
           ))
         ) : (
           <h2>Loading</h2>

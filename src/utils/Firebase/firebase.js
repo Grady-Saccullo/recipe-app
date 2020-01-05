@@ -79,16 +79,21 @@ class Firebase {
   /* ========== Storage API ========== */
   // need to get url from photo and pass data through callback
   // look into cloud function to listen to users folder in storage and compress images accordingly
-  uploadRecipeImage = (recipeId, filename, file, callback) =>
-    this.storage.ref()
+  uploadRecipeImage = (recipeId, filename, file, progess, callback) => {
+    let uploadTask = this.storage.ref()
       .child(`/users/${this.auth.currentUser.uid}/recipes/${recipeId}/${filename}`)
-      .put(file)
+      .put(file);
+    
+    return (
+    uploadTask
       .on(
         'state_changed',
-        snapshot => console.log(Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100)),
+        snapshot => progess((snapshot.bytesTransferred / snapshot.totalBytes) * 100),
         error => console.error('Firebase uploadRecipeImage: ', error),
-        callback
-      );
+        () => uploadTask.snapshot.ref.getDownloadURL().then(downloadURL => callback(downloadURL))
+      )
+    )
+  }
 
 
 }
