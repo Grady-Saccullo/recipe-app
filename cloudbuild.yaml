@@ -12,7 +12,7 @@ steps:
 
 # Install
 - name: 'gcr.io/cloud-builders/yarn'
-  args: ['install', '--ignore-engines']
+  args: ['install']
 
 # Test
 #- name: 'gcr.io/cloud-builders/yarn'
