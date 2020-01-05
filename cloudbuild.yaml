@@ -11,7 +11,7 @@ steps:
     - --key=cloudbuild-env
 
 # Install
-- name: 'gcr.io/cloud-builders/yarn'
+- name: 'gcr.io/$PROJECT_ID/yarn:current'
   args: ['install']
 
 # Test
@@ -19,7 +19,7 @@ steps:
 #  args: ['run', 'test:unit']
 
 # Build
-- name: 'gcr.io/cloud-builders/yarn'
+- name: 'gcr.io/$PROJECT_ID/yarn:current'
   args: ['run', 'build']
 
 # Deploy
