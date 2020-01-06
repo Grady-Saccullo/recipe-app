@@ -28,7 +28,7 @@ import { FirebaseContext } from '../../utils/Firebase';
 import {
   SectionNarrowWidth,
   SquaredButtonSmall,
-  DivGap
+  DivGap,
 } from '../../components/Shared';
 
 /* ========== Main Page Component ========== */
@@ -138,6 +138,7 @@ const NewRecipe = () => {
               disabled={drink}
               control={
                 <Checkbox
+                  color="default"
                   checked={food}
                   value="food"
                   onChange={handleTypeChange('food')}
@@ -149,6 +150,7 @@ const NewRecipe = () => {
             disabled={food}
               control={
                 <Checkbox
+                  color="default"
                   checked={drink}
                   value="drink"
                   onChange={handleTypeChange('drink')}
@@ -203,7 +205,7 @@ const NewRecipe = () => {
               <div key={index} style={{ padding: '20px' }}>
                 <h3 style={{ marginBottom: '0' }}>Step {index + 1}.</h3>
                 <hr style={{color: 'black'}} />
-                <p>{step.description}</p>
+                <p style={{ fontSize: '1.5em' }}>{step.description}</p>
               </div>
             ))
 

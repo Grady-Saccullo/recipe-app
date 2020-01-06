@@ -14,8 +14,9 @@ export const SectionFullWidth = styled.div`
 `;
 
 export const SectionNarrowWidth = styled.div`
+
   max-width: 900px;
-  padding: 0 10px;
+  padding: ${props => (props.smallFullWidth ? '0' : '0 10px')};
   margin: 0 auto;
   display: flex;
   flex-direction: column;

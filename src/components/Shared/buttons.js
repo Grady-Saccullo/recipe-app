@@ -1,6 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Fab, Button } from '@material-ui/core';
+import {
+  Fab,
+  Button
+} from '@material-ui/core';
 
 /******************* Local Imports *******************/
 import theme from '../../utils/constants/theme';
