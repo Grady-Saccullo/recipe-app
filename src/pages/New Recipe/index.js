@@ -281,7 +281,7 @@ const Ingredient = ({ onClick }) => {
           value={ingredients.type}
           onChange={event => onChange(event)}
         >
-          <MenuItem value="none"><em>None</em></MenuItem>
+          <MenuItem value=""><em>None</em></MenuItem>
           <MenuItem value="cup">Cup{addS()}</MenuItem>
           <MenuItem value="pint">Pint{addS()} </MenuItem>
           <MenuItem value="gram">gram{addS()}</MenuItem>
